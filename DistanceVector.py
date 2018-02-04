@@ -31,7 +31,6 @@ class DistanceVector(Node):
     
 
     def send_initial_messages(self):
-        # print(self.__str__())
         for link in self.incoming_links:
             message = self.message(self.name, self.vector, link.name)
             self.send_msg(message, link.name)
@@ -81,5 +80,4 @@ class DistanceVector(Node):
         # add_entry("A", "A0,B1,C2")        
     def message(self, source, vector, destination):
         message = { "source": source, "vector": vector, "dest": destination }
-        print(message)
         return message
