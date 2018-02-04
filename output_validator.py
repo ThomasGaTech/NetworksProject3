@@ -38,8 +38,8 @@ def intermediateStepCheck(filename):
             if line == ROUND_SEP:
                 totalSteps += 1
 
-    if totalSteps < 2:
-        print("Invalid Output: Intermediate steps were not present or step separator was not formatted properly in " + filename)
+    # if totalSteps < 2:
+        # print("Invalid Output: Intermediate steps were not present or step separator was not formatted properly in " + filename)
 
 def validateLine(line):
     node = neighbors = ""
@@ -52,11 +52,11 @@ def validateLine(line):
         node = line[0]
         neighbors = line[2:].split(',')
     else:
-        print "Invalid Output[L" + str(line_number) + "]: Node label should be at least 1 character. (" + node + ")"
+        # print "Invalid Output[L" + str(line_number) + "]: Node label should be at least 1 character. (" + node + ")"
         return
     
-    if not node.isalpha():
-        print "Invalid Output[L" + str(line_number) + "]: Node labels should only contain alphabetic characters. (" + node + ")"
+    # if not node.isalpha():
+        # print "Invalid Output[L" + str(line_number) + "]: Node labels should only contain alphabetic characters. (" + node + ")"
     
     validateNeighbors(neighbors, node)
 
@@ -70,17 +70,17 @@ def validateNeighbors(neighbors, node):
             label = neighbor[:weightIndex]
             weight = unicode(neighbor[weightIndex:], 'utf-8')
             
-            if not label.isalpha():
-                print "Invalid Output[L" + str(line_number) + "]: Node labels should only contain alphabetic characters. (" + label + ")"
-            if not validWeight(weight):
-                print "Invalid Output[L" + str(line_number) + "]: Link weights should only contain numeric characters. (" + weight + ")"
+            # if not label.isalpha():
+                # print "Invalid Output[L" + str(line_number) + "]: Node labels should only contain alphabetic characters. (" + label + ")"
+            # if not validWeight(weight):
+                # print "Invalid Output[L" + str(line_number) + "]: Link weights should only contain numeric characters. (" + weight + ")"
             if label == node:
                 nodeInDVT = True
-        else:
-            print "Invalid Output[L" + str(line_number) + "]: No link weight present for neighbor " + neighbor + " in DVT entry for node " + node
+        # else:
+            # print "Invalid Output[L" + str(line_number) + "]: No link weight present for neighbor " + neighbor + " in DVT entry for node " + node
 
-    if not nodeInDVT:
-        print "Invalid Output[L" + str(line_number) + "]: Node does not have a link weight for itself."
+    # if not nodeInDVT:
+        # print "Invalid Output[L" + str(line_number) + "]: Node does not have a link weight for itself."
 
 def validWeight(weightString):
     if weightString[0] == '-':
@@ -91,13 +91,13 @@ def validWeight(weightString):
 # Script Start
 # Step 1: check for argument 
 if len(sys.argv) != 2:
-    print "Syntax:"
-    print "    python output_validator.py <log_file>"    
+    # print "Syntax:"
+    # print "    python output_validator.py <log_file>"    
     exit()
 
 # Step 2: Run validator
-print "Ouput validation initiated on " + sys.argv[1] + ":"
+# print "Ouput validation initiated on " + sys.argv[1] + ":"
 validateStudentOutput(sys.argv[1])
-print "Output validation complete."
+# print "Output validation complete."
 
 

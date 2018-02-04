@@ -26,11 +26,15 @@ class DistanceVector(Node):
         specific to a DV node is done here.'''
 
         super(DistanceVector, self).__init__(name, topolink, outgoing_links, incoming_links)
-        
+        self.vector = { name: 0 }
         #TODO: Create any necessary data structure(s) to contain the Node's internal state / distance vector data    
     
 
     def send_initial_messages(self):
+        # print(self.__str__())
+        for link in self.incoming_links:
+            message = self.message(self.name, self.vector, link.name)
+            self.send_msg(message, link.name)
         ''' This is run once at the beginning of the simulation, after all
         DistanceVector objects are created and their links to each other are
         established, but before any of the rest of the simulation begins. You
@@ -50,7 +54,9 @@ class DistanceVector(Node):
 
         # Implement the Bellman-Ford algorithm here.  It must accomplish two tasks below:
         # TODO 1. Process queued messages       
+        print(self.name + '\'s messages: ')
         for msg in self.messages:            
+            print('\t' + str(msg))
             pass
         
         # Empty queue
@@ -72,4 +78,8 @@ class DistanceVector(Node):
         
         # TODO: Use the provided helper function add_entry() to accomplish this task (see helpers.py).
         # An example call that which prints the format example text above (hardcoded) is provided.        
-        add_entry("A", "A0,B1,C2")        
+        # add_entry("A", "A0,B1,C2")        
+    def message(self, source, vector, destination):
+        message = { "source": source, "vector": vector, "dest": destination }
+        print(message)
+        return message
