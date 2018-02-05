@@ -27,13 +27,12 @@ class DistanceVector(Node):
 
         super(DistanceVector, self).__init__(name, topolink, outgoing_links, incoming_links)
         self.vector = { name: 0 }
+
         #TODO: Create any necessary data structure(s) to contain the Node's internal state / distance vector data    
     
 
     def send_initial_messages(self):
-        for link in self.incoming_links:
-            message = self.message(self.name, self.vector, link.name)
-            self.send_msg(message, link.name)
+        self.send_to_incoming_links()
         ''' This is run once at the beginning of the simulation, after all
         DistanceVector objects are created and their links to each other are
         established, but before any of the rest of the simulation begins. You
@@ -53,15 +52,24 @@ class DistanceVector(Node):
 
         # Implement the Bellman-Ford algorithm here.  It must accomplish two tasks below:
         # TODO 1. Process queued messages       
-        print(self.name + '\'s messages: ')
-        for msg in self.messages:            
-            print('\t' + str(msg))
-            pass
+        updated = False
+        for msg in self.messages:         
+            for node in msg["vector"].keys():
+                if node not in self.vector and node != self.name:
+                    if self.is_outgoing_neighbor(node):
+                        weight = self.get_outgoing_neighbor_weight(node)
+                    else:
+                        weight = int(self.get_outgoing_neighbor_weight(msg["source"])) + int(msg["vector"][node])
+                    self.vector[node] = weight
+                    updated = True
+
         
         # Empty queue
         self.messages = []
 
-        # TODO 2. Send neighbors updated distances               
+        # TODO 2. Send neighbors updated distances          
+        if updated:
+            self.send_to_incoming_links()
 
 
     def log_distances(self):
@@ -76,8 +84,20 @@ class DistanceVector(Node):
         NOTE: A0 shows that the distance to self is 0 '''
         
         # TODO: Use the provided helper function add_entry() to accomplish this task (see helpers.py).
-        # An example call that which prints the format example text above (hardcoded) is provided.        
-        # add_entry("A", "A0,B1,C2")        
-    def message(self, source, vector, destination):
-        message = { "source": source, "vector": vector, "dest": destination }
-        return message
+        # An example call that which prints the format example text above (hardcoded) is provided.     
+        seperator = ','
+        link_texts = []
+        for key in self.vector:
+            link_texts.append(key + str(self.vector[key]))   
+        link_texts.sort()
+        add_entry(self.name, seperator.join(link_texts))        
+
+    def is_outgoing_neighbor(self, nodeName):
+        for link in self.outgoing_links:
+            if nodeName == link.name:
+                return True
+
+    def send_to_incoming_links(self):
+        for link in self.incoming_links:
+            message = { "source": self.name, "vector": self.vector.copy(), "dest": link }
+            self.send_msg(message, link.name)
