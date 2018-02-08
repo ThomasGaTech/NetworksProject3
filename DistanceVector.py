@@ -63,15 +63,21 @@ class DistanceVector(Node):
                     self.vector[node] = weight
                     updated = True
                 elif node in self.vector and node != self.name:
-                    new_distance = int(self.get_outgoing_neighbor_weight(msg["source"])) + int(msg["vector"][node])
-                    print('new_distance for '+self.name+' to ' +node+' = ' + msg["source"] + self.get_outgoing_neighbor_weight(msg["source"]) + " + " + node + str(msg["vector"][node]) + " = " + str(new_distance))
-                    if new_distance < self.vector[node]:
-                        self.vector[node] = new_distance
-                        updated = True
-                    if self.vector[node] <= -99:
-                        # print(self.name + " to " + node + " less than -99: " + str(new_distance))
+                    self_to_source = int(self.get_outgoing_neighbor_weight(msg["source"]))
+                    source_to_node = int(msg["vector"][node])
+                    new_distance = self_to_source + source_to_node
+                    # print('new_distance for '+self.name+' to ' +node+' = ' + msg["source"] + self.get_outgoing_neighbor_weight(msg["source"]) + " + " + node + str(msg["vector"][node]) + " = " + str(new_distance))
+                    if self_to_source <= -99 or source_to_node <= -99 and self.vector[node] != -99:
                         self.vector[node] = -99
                         updated = True
+                    else:
+                        if new_distance < self.vector[node] and new_distance > -99:
+                            self.vector[node] = new_distance
+                            updated = True
+                        elif new_distance <= -99 and self.vector[node] != -99:
+                            # print(self.name + " to " + node + " less than -99: " + str(new_distance))
+                            self.vector[node] = -99
+                            updated = True
 
         # Empty queue
         self.messages = []
